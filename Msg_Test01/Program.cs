@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Msg_Test01.Data;
+
 namespace Msg_Test01
 {
     public class Program
@@ -8,6 +11,7 @@ namespace Msg_Test01
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddDbContext<AppDbContext>(options=> options.UseSqlite("Data Source=app.db"));
 
             var app = builder.Build();
 

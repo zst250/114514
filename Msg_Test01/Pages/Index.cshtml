@@ -1,10 +1,131 @@
-﻿@page
+@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "我的留言板";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    /* ===== 页面整体 ===== */
+    body {
+        background: #f4f5f7;                     /* 浅灰底，白卡片才显得出来 */
+        font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+    }
+
+    .board {
+        max-width: 620px;                        /* 限宽：一行别太长，读起来舒服 */
+        margin: 32px auto;                       /* 上下留白 + 水平居中 */
+        background: #fff;
+        padding: 26px 28px;
+        border-radius: 14px;                     /* 圆角 */
+        box-shadow: 0 4px 20px rgba(0,0,0,.06);  /* 淡阴影，让卡片"浮"起来 */
+    }
+
+    .board h1 {
+        font-size: 22px;
+        text-align: center;
+        margin: 0 0 22px;
+        color: #222;
+    }
+
+    /* ===== 发布留言表单 ===== */
+    .publish { display: flex; flex-direction: column; gap: 10px; }
+
+    .publish input,
+    .publish textarea {
+        padding: 10px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 9px;
+        font-size: 14px;
+        font-family: inherit;                    /* 输入框也用同一种字体 */
+        outline: none;
+        transition: border-color .2s;
+    }
+    .publish input:focus,
+    .publish textarea:focus { border-color: #4a7cf7; }   /* 聚焦时边框变蓝 */
+
+    .publish button {
+        padding: 11px;
+        border: none;
+        border-radius: 9px;
+        background: #4a7cf7;
+        color: #fff;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background .2s;
+    }
+    .publish button:hover { background: #3a63d0; }        /* 悬停变深 */
+
+    /* ===== 统计行 ===== */
+    .stat { color: #999; font-size: 13px; margin: 22px 0 12px; }
+
+    /* ===== 留言列表 ===== */
+    .msg-list { list-style: none; padding: 0; margin: 0; }
+
+    .msg {
+        background: #fafbfc;
+        border: 1px solid #eef0f3;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 10px;
+    }
+
+    .msg .head { display: flex; justify-content: space-between; align-items: baseline; }
+    .msg .name { font-weight: 700; color: #333; }
+    .msg .time { color: #aaa; font-size: 12px; }
+
+    .msg .content {
+        margin: 8px 0 10px;
+        line-height: 1.65;
+        color: #444;
+        white-space: pre-wrap;      /* 保留用户输入的换行 */
+        word-break: break-word;     /* 超长英文/网址不会撑破卡片 */
+    }
+
+    .msg .del {
+        background: none; border: none; padding: 0;
+        color: #e05252; font-size: 13px; cursor: pointer;
+    }
+    .msg .del:hover { text-decoration: underline; }
+
+    .empty { text-align: center; color: #b0b0b0; padding: 24px 0; font-size: 14px; }
+</style>
+
+<div class="board">
+    <h1>我的留言板</h1>
+
+    <!-- 发布留言 -->
+    <form method="post" class="publish">
+        <input asp-for="NewMessage.Name" placeholder="你的名字" />
+        <span asp-validation-for="NewMessage.Name" style="color:red;font-size:13px"></span>
+
+        <textarea asp-for="NewMessage.Content" rows="3" placeholder="说点什么……"></textarea>
+        <span asp-validation-for="NewMessage.Content" style="color:red;font-size:13px"></span>
+
+        <button type="submit">发布留言</button>
+    </form>
+
+    <p class="stat">已有留言 @Model.messages.Count 条 · 共 @Model.TotalChars 个字</p>
+
+    @if (Model.messages.Count == 0)
+    {
+        <p class="empty">还没有留言，来抢沙发吧～</p>
+    }
+    else
+    {
+        <ul class="msg-list">
+            @foreach (var m in Model.messages)
+            {
+                <li class="msg">
+                    <div class="head">
+                        <span class="name">@m.Name</span>
+                        <span class="time">@m.CreatedDate.ToString("M月d日 HH:mm")</span>
+                    </div>
+                    <div class="content">@m.Content</div>
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@m.Id">
+                        <button type="submit" class="del">删除</button>
+                    </form>
+                </li>
+            }
+        </ul>
+    }
 </div>
