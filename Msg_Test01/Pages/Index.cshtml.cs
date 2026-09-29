@@ -54,5 +54,19 @@ namespace Msg_Test01.Pages
             }
             return RedirectToPage();
         }
+        public IActionResult OnPostDeleteAll()
+        {
+            if (_db.Messages.Count() == 0) {
+                InitPage();
+                return Page();
+            }
+            foreach(var m in _db.Messages)
+            {
+                _db.Messages.Remove(m);
+            }
+            _db.SaveChanges();
+            return RedirectToPage();
+
+        }
     }
 }

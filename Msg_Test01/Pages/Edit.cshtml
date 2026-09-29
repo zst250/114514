@@ -1,0 +1,15 @@
+﻿@page
+@model Msg_Test01.Pages.EditModel
+
+    <form method="post" asp-page-handler="Edit">
+        <input type="hidden" asp-for="EditMessage.Id" />
+
+        <input asp-for="EditMessage.Name" />
+        <span asp-validation-for="EditMessage.Name" style="color:red"></span>
+
+        <textarea asp-for="EditMessage.Content" rows="3" ></textarea>
+        <span asp-validation-for="EditMessage.Content" style="color:red"></span>
+
+        <button type="submit">提交</button>
+    </form>
+

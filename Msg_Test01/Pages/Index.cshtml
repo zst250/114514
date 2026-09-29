@@ -106,6 +106,11 @@
 
     <p class="stat">已有留言 @Model.messages.Count 条 · 共 @Model.TotalChars 个字</p>
 
+    <p></p>
+    <form method="post" asp-page-handler="DeleteAll">
+        <button type="submit" onclick="return confirm('确定删除全部留言吗？')">删除所有一键清空</button>
+    </form>
+
     @if (Model.messages.Count == 0)
     {
         <p class="empty">还没有留言，来抢沙发吧～</p>
@@ -121,8 +126,10 @@
                         <span class="time">@m.CreatedDate.ToString("M月d日 HH:mm")</span>
                     </div>
                     <div class="content">@m.Content</div>
+                    <a asp-page="/Edit" asp-route-id="@m.Id">编辑</a>
                     <form method="post" asp-page-handler="Delete" asp-route-id="@m.Id">
                         <button type="submit" class="del">删除</button>
+                        
                     </form>
                 </li>
             }
